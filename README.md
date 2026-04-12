@@ -37,14 +37,16 @@ matrix storage — all arithmetic is implemented from scratch.
 
 ## Build
 
+CMake configures the project; **GNU Make** is the default build tool (`Unix Makefiles` generator). On macOS/Linux, `cmake --build` invokes `make` under the hood.
+
 ```bash
 # Release
-cmake -B build -DCMAKE_BUILD_TYPE=Release
+cmake -B build -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release
 cmake --build build -j$(nproc)
 ctest --test-dir build --output-on-failure
 
 # Debug — AddressSanitizer + UndefinedBehaviorSanitizer enabled automatically
-cmake -B build -DCMAKE_BUILD_TYPE=Debug
+cmake -B build -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Debug
 cmake --build build -j$(nproc)
 ctest --test-dir build --output-on-failure
 ```

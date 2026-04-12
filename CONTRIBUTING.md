@@ -5,7 +5,7 @@
 From the repository root:
 
 ```bash
-cmake -B build -DCMAKE_BUILD_TYPE=Debug
+cmake -B build -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Debug
 cmake --build build -j$(nproc)
 ctest --test-dir build --output-on-failure
 ```
@@ -13,7 +13,7 @@ ctest --test-dir build --output-on-failure
 Release builds (recommended before benchmarking or profiling):
 
 ```bash
-cmake -B build -DCMAKE_BUILD_TYPE=Release
+cmake -B build -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release
 cmake --build build -j$(nproc)
 ctest --test-dir build --output-on-failure
 ```

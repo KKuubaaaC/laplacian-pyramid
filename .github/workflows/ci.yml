@@ -32,11 +32,11 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y cmake ninja-build build-essential \
+          sudo apt-get install -y cmake build-essential \
             libopencv-dev libgtest-dev clang-tidy
 
       - name: Configure Debug
-        run: cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Debug
+        run: cmake -B build -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Debug
 
       - name: Build Debug
         run: cmake --build build -j$(nproc)
@@ -53,7 +53,7 @@ jobs:
         run: ctest --test-dir build --output-on-failure
 
       - name: Configure Release
-        run: cmake -B build-rel -G Ninja -DCMAKE_BUILD_TYPE=Release
+        run: cmake -B build-rel -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release
 
       - name: Build Release
         run: cmake --build build-rel -j$(nproc)
