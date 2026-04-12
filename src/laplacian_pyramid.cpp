@@ -23,8 +23,8 @@ namespace internal {
 // Reduce / Expand — building blocks of the Laplacian pyramid
 
 cv::Mat Reduce(const cv::Mat& img) {
-    assert(!img.empty());
-    assert(img.type() == CV_32FC1);
+    CV_Assert(!img.empty());
+    CV_Assert(img.type() == CV_32FC1);
     return Downsample(GaussianBlur(img));
 }
 
@@ -100,7 +100,7 @@ cv::Mat LaplacianPyramid::Reconstruct() const {
     // Because L[i] = g[i] - Expand(g[i+1]) was stored in Build, and Expand
     // is deterministic, the round-trip is algebraically perfect
     const int n = NumLevels();
-    assert(n > 0);
+    CV_Assert(n > 0);
     const cv::Mat* coarse = &gaussian_top_;
     cv::Mat current;
     for (int i = n - 1; i >= 0; --i) {
