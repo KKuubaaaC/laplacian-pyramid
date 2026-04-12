@@ -1,0 +1,65 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  clang-format:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install clang-format
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y clang-format
+
+      - name: Verify clang-format
+        run: |
+          git ls-files '*.cpp' '*.h' | xargs clang-format --dry-run --Werror
+
+  build-and-test:
+    runs-on: ubuntu-latest
+    needs: [clang-format]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake ninja-build build-essential \
+            libopencv-dev libgtest-dev clang-tidy
+
+      - name: Configure Debug
+        run: cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Debug
+
+      - name: Build Debug
+        run: cmake --build build -j$(nproc)
+
+      - name: clang-tidy (src/)
+        run: |
+          set -euo pipefail
+          for f in src/*.cpp; do
+            echo "clang-tidy $f"
+            clang-tidy "$f" -p build --quiet
+          done
+
+      - name: Test Debug
+        run: ctest --test-dir build --output-on-failure
+
+      - name: Configure Release
+        run: cmake -B build-rel -G Ninja -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build Release
+        run: cmake --build build-rel -j$(nproc)
+
+      - name: Test Release
+        run: ctest --test-dir build-rel --output-on-failure
+
+      - name: Smoke test demo
+        run: ./build-rel/pyramid_demo data/test_512.png 4

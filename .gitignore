@@ -1,0 +1,13 @@
+build/
+build-rel/
+.cache/
+output/
+compile_commands.json
+*.o
+*.a
+.DS_Store
+**/.DS_Store
+
+# Large PNGs under data/; exception for CI smoke asset
+data/*.png
+!data/test_512.png
